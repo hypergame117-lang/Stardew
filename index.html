@@ -1,48 +1,41 @@
-<html>
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Cultivos por Estación</title>
+<title>Cultivos por estación</title>
 
 <style>
+
 body{
-    font-family: Arial;
-    text-align:center;
-    background:#f4f4f4;
-}
-
-h1{
-    margin-top:20px;
-}
-
-select{
-    padding:8px;
-    font-size:16px;
+font-family: Arial;
+background:#f4f4f4;
+text-align:center;
 }
 
 table{
-    margin:20px auto;
-    border-collapse:collapse;
-    width:70%;
-    background:white;
+margin:auto;
+border-collapse:collapse;
+width:80%;
+background:white;
 }
 
-th, td{
-    padding:10px;
-    border:1px solid #ccc;
+th,td{
+border:1px solid #ccc;
+padding:8px;
 }
 
-th{
-    background:#444;
-    color:white;
+img{
+width:32px;
+height:32px;
 }
+
 </style>
 
 </head>
 <body>
 
-<h1>Cultivos por Estación</h1>
+<h1>Cultivos por estación</h1>
 
 <select id="seasonSelect">
 <option value="spring">Primavera</option>
@@ -50,92 +43,107 @@ th{
 <option value="fall">Otoño</option>
 </select>
 
-<table id="cropsTable">
+<table>
 <thead>
 <tr>
+<th>Imagen</th>
 <th>Cultivo</th>
-<th>Costo de semilla</th>
-<th>Precio de venta</th>
-<th>Oro por día</th>
-<th>Tiempo de crecimiento</th>
+<th>Costo semilla</th>
+<th>Precio venta</th>
+<th>Oro/día</th>
+<th>Crecimiento</th>
 </tr>
 </thead>
-<tbody></tbody>
+
+<tbody id="tableBody"></tbody>
 </table>
 
 <script>
 
-const crops = {
+const crops={
 
-spring: [
-{crop:"Jazz azul", seed:30, sell:50, gold:3, growth:"7 días"},
-{crop:"Coliflor", seed:80, sell:175, gold:8, growth:"12 días"},
-{crop:"Ajo", seed:40, sell:60, gold:5, growth:"4 días"},
-{crop:"Col rizada", seed:70, sell:110, gold:7, growth:"6 días"},
-{crop:"Chirivía", seed:20, sell:35, gold:4, growth:"4 días"},
-{crop:"Patata", seed:50, sell:80, gold:5, growth:"6 días"},
-{crop:"Ruibarbo", seed:100, sell:220, gold:9, growth:"13 días"},
-{crop:"Tulipán", seed:20, sell:30, gold:2, growth:"6 días"},
-{crop:"Judía verde", seed:60, sell:40, gold:7, growth:"10 días"}
+spring:[
+
+{img:"img/blue_jazz.png",crop:"Jazz azul",seed:30,sell:50,gold:3,growth:"7 días"},
+{img:"img/cauliflower.png",crop:"Coliflor",seed:80,sell:175,gold:8,growth:"12 días"},
+{img:"img/garlic.png",crop:"Ajo",seed:40,sell:60,gold:5,growth:"4 días"},
+{img:"img/kale.png",crop:"Col rizada",seed:70,sell:110,gold:7,growth:"6 días"},
+{img:"img/parsnip.png",crop:"Chirivía",seed:20,sell:35,gold:4,growth:"4 días"},
+{img:"img/potato.png",crop:"Patata",seed:50,sell:80,gold:5,growth:"6 días"},
+{img:"img/rhubarb.png",crop:"Ruibarbo",seed:100,sell:220,gold:9,growth:"13 días"},
+{img:"img/tulip.png",crop:"Tulipán",seed:20,sell:30,gold:2,growth:"6 días"},
+{img:"img/green_bean.png",crop:"Judía verde",seed:60,sell:40,gold:7,growth:"10 días"},
+{img:"img/strawberry.png",crop:"Fresa",seed:100,sell:120,gold:21,growth:"8 días"}
+
 ],
 
-summer: [
-{crop:"Trigo", seed:10, sell:25, gold:4, growth:"4 días"},
-{crop:"Carambola", seed:400, sell:750, gold:27, growth:"13 días"},
-{crop:"Lombarda", seed:100, sell:260, gold:18, growth:"9 días"},
-{crop:"Rábano", seed:40, sell:90, gold:8, growth:"6 días"},
-{crop:"Melón", seed:80, sell:250, gold:14, growth:"12 días"},
-{crop:"Tomate", seed:50, sell:60, gold:9, growth:"11 días"},
-{crop:"Chile", seed:40, sell:40, gold:11, growth:"5 días"},
-{crop:"Arándano", seed:80, sell:50, gold:21, growth:"13 días"}
+summer:[
+
+{img:"img/wheat.png",crop:"Trigo",seed:10,sell:25,gold:4,growth:"4 días"},
+{img:"img/sunflower.png",crop:"Girasol",seed:200,sell:80,gold:-15,growth:"8 días"},
+{img:"img/summer_spangle.png",crop:"Lentejuela de verano",seed:50,sell:90,gold:5,growth:"8 días"},
+{img:"img/starfruit.png",crop:"Carambola",seed:400,sell:750,gold:27,growth:"13 días"},
+{img:"img/red_cabbage.png",crop:"Col roja",seed:100,sell:260,gold:18,growth:"9 días"},
+{img:"img/radish.png",crop:"Rábano",seed:40,sell:90,gold:8,growth:"6 días"},
+{img:"img/poppy.png",crop:"Amapola",seed:100,sell:140,gold:6,growth:"7 días"},
+{img:"img/melon.png",crop:"Melón",seed:80,sell:250,gold:14,growth:"12 días"},
+{img:"img/tomato.png",crop:"Tomate",seed:50,sell:60,gold:9,growth:"11 días"},
+{img:"img/hot_pepper.png",crop:"Chile",seed:40,sell:40,gold:11,growth:"5 días"},
+{img:"img/hops.png",crop:"Lúpulo",seed:60,sell:25,gold:14,growth:"11 días"},
+{img:"img/corn.png",crop:"Maíz",seed:150,sell:50,gold:7,growth:"14 días"},
+{img:"img/blueberry.png",crop:"Arándano",seed:80,sell:50,gold:21,growth:"13 días"}
+
 ],
 
-fall: [
-{crop:"Amaranto", seed:70, sell:150, gold:11, growth:"7 días"},
-{crop:"Alcachofa", seed:30, sell:160, gold:16, growth:"8 días"},
-{crop:"Remolacha", seed:20, sell:100, gold:13, growth:"6 días"},
-{crop:"Col china", seed:50, sell:80, gold:8, growth:"4 días"},
-{crop:"Calabaza", seed:100, sell:320, gold:17, growth:"13 días"},
-{crop:"Baya gema dulce", seed:1000, sell:3000, gold:83, growth:"24 días"},
-{crop:"Ñame", seed:60, sell:160, gold:10, growth:"10 días"},
-{crop:"Arándano rojo", seed:240, sell:75, gold:19, growth:"7 días"},
-{crop:"Berenjena", seed:20, sell:60, gold:11, growth:"5 días"},
-{crop:"Uva", seed:60, sell:80, gold:17, growth:"10 días"}
+fall:[
+
+{img:"img/amaranth.png",crop:"Amaranto",seed:70,sell:150,gold:11,growth:"7 días"},
+{img:"img/artichoke.png",crop:"Alcachofa",seed:30,sell:160,gold:16,growth:"8 días"},
+{img:"img/beet.png",crop:"Remolacha",seed:20,sell:100,gold:13,growth:"6 días"},
+{img:"img/bok_choy.png",crop:"Col china",seed:50,sell:80,gold:8,growth:"4 días"},
+{img:"img/fairy_rose.png",crop:"Rosa feérica",seed:200,sell:290,gold:8,growth:"12 días"},
+{img:"img/pumpkin.png",crop:"Calabaza",seed:100,sell:320,gold:17,growth:"13 días"},
+{img:"img/sweet_gem_berry.png",crop:"Baya gema dulce",seed:1000,sell:3000,gold:83,growth:"24 días"},
+{img:"img/yam.png",crop:"Ñame",seed:60,sell:160,gold:10,growth:"10 días"},
+{img:"img/cranberry.png",crop:"Arándano rojo",seed:240,sell:75,gold:19,growth:"7 días"},
+{img:"img/eggplant.png",crop:"Berenjena",seed:20,sell:60,gold:11,growth:"5 días"},
+{img:"img/grape.png",crop:"Uva",seed:60,sell:80,gold:17,growth:"10 días"}
+
 ]
 
-};
+}
 
 function showCrops(season){
 
-const tbody = document.querySelector("#cropsTable tbody");
-tbody.innerHTML="";
+const tbody=document.getElementById("tableBody")
+tbody.innerHTML=""
 
-crops[season].forEach(c => {
+crops[season].forEach(c=>{
 
-let row = `
+tbody.innerHTML+=`
 <tr>
+<td><img src="${c.img}"></td>
 <td>${c.crop}</td>
 <td>${c.seed}</td>
 <td>${c.sell}</td>
 <td>${c.gold}</td>
 <td>${c.growth}</td>
 </tr>
-`;
+`
 
-tbody.innerHTML += row;
-
-});
+})
 
 }
 
-document.getElementById("seasonSelect").addEventListener("change", e=>{
-showCrops(e.target.value);
-});
+document.getElementById("seasonSelect").addEventListener("change",e=>{
+showCrops(e.target.value)
+})
 
-showCrops("spring");
+showCrops("spring")
 
 </script>
 
 </body>
 </html>
 ```
+
