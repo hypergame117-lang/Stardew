@@ -1,149 +1,209 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Cultivos por estación</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stardew Valley: Cultivos por Estación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a7c59;
+            --secondary: #8fcb9b;
+            --accent: #f4a261;
+            --bg: #fdfaf6;
+            --text: #333;
+        }
 
-<style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
 
-body{
-font-family: Arial;
-background:#f4f4f4;
-text-align:center;
-}
+        h1 {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
 
-table{
-margin:auto;
-border-collapse:collapse;
-width:80%;
-background:white;
-}
+        /* Contenedor del selector */
+        .selector-container {
+            margin-bottom: 30px;
+        }
 
-th,td{
-border:1px solid #ccc;
-padding:8px;
-}
+        select {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+        }
 
-img{
-width:32px;
-height:32px;
-}
+        select:focus {
+            box-shadow: 0 0 8px rgba(74, 124, 89, 0.4);
+        }
 
-</style>
+        /* Estilos de la Tabla */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 1000px;
+            margin: auto;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        tr:hover td {
+            background-color: #f9fff9;
+        }
+
+        img {
+            width: 32px;
+            height: 32px;
+            vertical-align: middle;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+        }
+
+        /* Badge para el Oro/día */
+        .gold-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+    </style>
 </head>
 <body>
 
-<h1>Cultivos por estación</h1>
+    <h1>🌱 Cultivos por Estación</h1>
 
-<select id="seasonSelect">
-<option value="spring">Primavera</option>
-<option value="summer">Verano</option>
-<option value="fall">Otoño</option>
-</select>
+    <div class="selector-container">
+        <select id="seasonSelect">
+            <option value="spring">🌸 Primavera</option>
+            <option value="summer">☀️ Verano</option>
+            <option value="fall">🍂 Otoño</option>
+        </select>
+    </div>
 
-<table>
-<thead>
-<tr>
-<th>Imagen</th>
-<th>Cultivo</th>
-<th>Costo semilla</th>
-<th>Precio venta</th>
-<th>Oro/día</th>
-<th>Crecimiento</th>
-</tr>
-</thead>
-
-<tbody id="tableBody"></tbody>
-</table>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Icono</th>
+                    <th>Cultivo</th>
+                    <th>Semilla</th>
+                    <th>Venta</th>
+                    <th>Oro/día</th>
+                    <th>Crecimiento</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 
 <script>
+const crops = {
+    spring: [
+        {img:"blue_Jazz.png",crop:"Jazz azul",seed:30,sell:50,gold:3,growth:"7 días"},
+        {img:"cauliflower.png",crop:"Coliflor",seed:80,sell:175,gold:8,growth:"12 días"},
+        {img:"garlic.png",crop:"Ajo",seed:40,sell:60,gold:5,growth:"4 días"},
+        {img:"kale.png",crop:"Col rizada",seed:70,sell:110,gold:7,growth:"6 días"},
+        {img:"parsnip.png",crop:"Chirivía",seed:20,sell:35,gold:4,growth:"4 días"},
+        {img:"potato.png",crop:"Patata",seed:50,sell:80,gold:5,growth:"6 días"},
+        {img:"rhubarb.png",crop:"Ruibarbo",seed:100,sell:220,gold:9,growth:"13 días"},
+        {img:"tulip.png",crop:"Tulipán",seed:20,sell:30,gold:2,growth:"6 días"},
+        {img:"green_bean.png",crop:"Judía verde",seed:60,sell:40,gold:7,growth:"10 días"},
+        {img:"strawberry.png",crop:"Fresa",seed:100,sell:120,gold:21,growth:"8 días"}
+    ],
+    summer: [
+        {img:"wheat.png",crop:"Trigo",seed:10,sell:25,gold:4,growth:"4 días"},
+        {img:"sunflower.png",crop:"Girasol",seed:200,sell:80,gold:-15,growth:"8 días"},
+        {img:"summer_spangle.png",crop:"Lentejuela",seed:50,sell:90,gold:5,growth:"8 días"},
+        {img:"starfruit.png",crop:"Carambola",seed:400,sell:750,gold:27,growth:"13 días"},
+        {img:"red_cabbage.png",crop:"Col roja",seed:100,sell:260,gold:18,growth:"9 días"},
+        {img:"radish.png",crop:"Rábano",seed:40,sell:90,gold:8,growth:"6 días"},
+        {img:"poppy.png",crop:"Amapola",seed:100,sell:140,gold:6,growth:"7 días"},
+        {img:"melon.png",crop:"Melón",seed:80,sell:250,gold:14,growth:"12 días"},
+        {img:"tomato.png",crop:"Tomate",seed:50,sell:60,gold:9,growth:"11 días"},
+        {img:"hot_pepper.png",crop:"Chile",seed:40,sell:40,gold:11,growth:"5 días"},
+        {img:"hops.png",crop:"Lúpulo",seed:60,sell:25,gold:14,growth:"11 días"},
+        {img:"corn.png",crop:"Maíz",seed:150,sell:50,gold:7,growth:"14 días"},
+        {img:"blueberry.png",crop:"Arándano",seed:80,sell:50,gold:21,growth:"13 días"}
+    ],
+    fall: [
+        {img:"amaranth.png",crop:"Amaranto",seed:70,sell:150,gold:11,growth:"7 días"},
+        {img:"artichoke.png",crop:"Alcachofa",seed:30,sell:160,gold:16,growth:"8 días"},
+        {img:"beet.png",crop:"Remolacha",seed:20,sell:100,gold:13,growth:"6 días"},
+        {img:"bok_choy.png",crop:"Col china",seed:50,sell:80,gold:8,growth:"4 días"},
+        {img:"fairy_rose.png",crop:"Rosa feérica",seed:200,sell:290,gold:8,growth:"12 días"},
+        {img:"pumpkin.png",crop:"Calabaza",seed:100,sell:320,gold:17,growth:"13 días"},
+        {img:"sweet_gem_berry.png",crop:"Baya gema dulce",seed:1000,sell:3000,gold:83,growth:"24 días"},
+        {img:"yam.png",crop:"Ñame",seed:60,sell:160,gold:10,growth:"10 días"},
+        {img:"cranberry.png",crop:"Arándano rojo",seed:240,sell:75,gold:19,growth:"7 días"},
+        {img:"eggplant.png",crop:"Berenjena",seed:20,sell:60,gold:11,growth:"5 días"},
+        {img:"grape.png",crop:"Uva",seed:60,sell:80,gold:17,growth:"10 días"}
+    ]
+};
 
-const crops={
+function showCrops(season) {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
 
-spring:[
-
-{img:"blue_Jazz.png",crop:"Jazz azul",seed:30,sell:50,gold:3,growth:"7 días"},
-{img:"cauliflower.png",crop:"Coliflor",seed:80,sell:175,gold:8,growth:"12 días"},
-{img:"garlic.png",crop:"Ajo",seed:40,sell:60,gold:5,growth:"4 días"},
-{img:"kale.png",crop:"Col rizada",seed:70,sell:110,gold:7,growth:"6 días"},
-{img:"parsnip.png",crop:"Chirivía",seed:20,sell:35,gold:4,growth:"4 días"},
-{img:"potato.png",crop:"Patata",seed:50,sell:80,gold:5,growth:"6 días"},
-{img:"rhubarb.png",crop:"Ruibarbo",seed:100,sell:220,gold:9,growth:"13 días"},
-{img:"tulip.png",crop:"Tulipán",seed:20,sell:30,gold:2,growth:"6 días"},
-{img:"green_bean.png",crop:"Judía verde",seed:60,sell:40,gold:7,growth:"10 días"},
-{img:"strawberry.png",crop:"Fresa",seed:100,sell:120,gold:21,growth:"8 días"}
-
-],
-
-summer:[
-
-{img:"wheat.png",crop:"Trigo",seed:10,sell:25,gold:4,growth:"4 días"},
-{img:"sunflower.png",crop:"Girasol",seed:200,sell:80,gold:-15,growth:"8 días"},
-{img:"summer_spangle.png",crop:"Lentejuela de verano",seed:50,sell:90,gold:5,growth:"8 días"},
-{img:"starfruit.png",crop:"Carambola",seed:400,sell:750,gold:27,growth:"13 días"},
-{img:"red_cabbage.png",crop:"Col roja",seed:100,sell:260,gold:18,growth:"9 días"},
-{img:"radish.png",crop:"Rábano",seed:40,sell:90,gold:8,growth:"6 días"},
-{img:"poppy.png",crop:"Amapola",seed:100,sell:140,gold:6,growth:"7 días"},
-{img:"melon.png",crop:"Melón",seed:80,sell:250,gold:14,growth:"12 días"},
-{img:"tomato.png",crop:"Tomate",seed:50,sell:60,gold:9,growth:"11 días"},
-{img:"hot_pepper.png",crop:"Chile",seed:40,sell:40,gold:11,growth:"5 días"},
-{img:"hops.png",crop:"Lúpulo",seed:60,sell:25,gold:14,growth:"11 días"},
-{img:"corn.png",crop:"Maíz",seed:150,sell:50,gold:7,growth:"14 días"},
-{img:"blueberry.png",crop:"Arándano",seed:80,sell:50,gold:21,growth:"13 días"}
-
-],
-
-fall:[
-
-{img:"amaranth.png",crop:"Amaranto",seed:70,sell:150,gold:11,growth:"7 días"},
-{img:"artichoke.png",crop:"Alcachofa",seed:30,sell:160,gold:16,growth:"8 días"},
-{img:"beet.png",crop:"Remolacha",seed:20,sell:100,gold:13,growth:"6 días"},
-{img:"bok_choy.png",crop:"Col china",seed:50,sell:80,gold:8,growth:"4 días"},
-{img:"fairy_rose.png",crop:"Rosa feérica",seed:200,sell:290,gold:8,growth:"12 días"},
-{img:"pumpkin.png",crop:"Calabaza",seed:100,sell:320,gold:17,growth:"13 días"},
-{img:"sweet_gem_berry.png",crop:"Baya gema dulce",seed:1000,sell:3000,gold:83,growth:"24 días"},
-{img:"yam.png",crop:"Ñame",seed:60,sell:160,gold:10,growth:"10 días"},
-{img:"cranberry.png",crop:"Arándano rojo",seed:240,sell:75,gold:19,growth:"7 días"},
-{img:"eggplant.png",crop:"Berenjena",seed:20,sell:60,gold:11,growth:"5 días"},
-{img:"grape.png",crop:"Uva",seed:60,sell:80,gold:17,growth:"10 días"}
-
-]
-
+    crops[season].forEach(c => {
+        const goldClass = c.gold < 0 ? 'gold-badge negative' : 'gold-badge';
+        tbody.innerHTML += `
+            <tr>
+                <td><img src="${c.img}" alt="${c.crop}"></td>
+                <td><strong>${c.crop}</strong></td>
+                <td>${c.seed}g</td>
+                <td>${c.sell}g</td>
+                <td><span class="${goldClass}">${c.gold}g</span></td>
+                <td>${c.growth}</td>
+            </tr>
+        `;
+    });
 }
 
-function showCrops(season){
+document.getElementById("seasonSelect").addEventListener("change", e => {
+    showCrops(e.target.value);
+});
 
-const tbody=document.getElementById("tableBody")
-tbody.innerHTML=""
-
-crops[season].forEach(c=>{
-
-tbody.innerHTML+=`
-<tr>
-<td><img src="${c.img}"></td>
-<td>${c.crop}</td>
-<td>${c.seed}</td>
-<td>${c.sell}</td>
-<td>${c.gold}</td>
-<td>${c.growth}</td>
-</tr>
-`
-
-})
-
-}
-
-document.getElementById("seasonSelect").addEventListener("change",e=>{
-showCrops(e.target.value)
-})
-
-showCrops("spring")
-
+showCrops("spring");
 </script>
 
 </body>
 </html>
-```
-
